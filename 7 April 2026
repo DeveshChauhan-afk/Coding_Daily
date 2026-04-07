@@ -1,0 +1,68 @@
+You are given an integer n.
+
+An integer x is considered good if there exist at least two distinct pairs (a, b) such that:
+
+a and b are positive integers.
+a <= b
+x = a3 + b3
+Return an array containing all good integers less than or equal to n, sorted in ascending order.
+
+ 
+
+Example 1:
+
+Input: n = 4104
+
+Output: [1729,4104]
+
+Explanation:
+
+Among integers less than or equal to 4104, the good integers are:
+
+1729: 13 + 123 = 1729 and 93 + 103 = 1729.
+4104: 23 + 163 = 4104 and 93 + 153 = 4104.
+Thus, the answer is [1729, 4104].
+
+Example 2:
+
+Input: n = 578
+
+Output: []
+
+Explanation:
+
+There are no good integers less than or equal to 578, so the answer is an empty array.
+
+ 
+
+Constraints:
+
+1 <= n <= 109
+
+=======================================================================================================================
+
+Answer: 
+
+class Solution {
+    public List<Integer> findGoodIntegers(int n) {
+        List<Integer> cubes=new ArrayList<>();
+        List<Integer> result=new ArrayList<>();
+        for(int i=1;Math.pow(i,3)<=n;i++){
+            cubes.add((int)Math.pow(i,3));
+        }
+        Map<Integer,Integer> map=new HashMap<>();
+        for(int i=0;i<cubes.size();i++){
+            for(int j=i+1;j<cubes.size();j++){
+                int num=cubes.get(i)+cubes.get(j);
+                if(num<=n){
+                    map.put(num,map.getOrDefault(num,0)+1);
+                    if(map.get(num)==2) result.add(num);
+                }else{
+                    break;
+                }
+            }
+        }
+        Collections.sort(result);
+        return result;
+    }
+}
