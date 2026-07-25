@@ -1,0 +1,59 @@
+A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+
+Given a string s, return true if it is a palindrome, or false otherwise.
+
+ 
+
+Example 1:
+
+Input: s = "A man, a plan, a canal: Panama"
+Output: true
+Explanation: "amanaplanacanalpanama" is a palindrome.
+Example 2:
+
+Input: s = "race a car"
+Output: false
+Explanation: "raceacar" is not a palindrome.
+Example 3:
+
+Input: s = " "
+Output: true
+Explanation: s is an empty string "" after removing non-alphanumeric characters.
+Since an empty string reads the same forward and backward, it is a palindrome.
+ 
+
+Constraints:
+
+1 <= s.length <= 2 * 105
+s consists only of printable ASCII characters.
+
+Solution:
+class Solution {
+    public boolean isPalindrome(String s) {
+        int left=0;
+        int right=s.length()-1;
+        while(left<right){
+            char l=s.charAt(left);
+            char r=s.charAt(right);
+            while(left<right && ((l<'a' || l>'z') && (l<'A' || l>'Z')) && (l<'0' || l>'9')) {
+                left++;
+                l=s.charAt(left);
+            }
+            while(left<right && ((r<'a' || r>'z') && (r<'A' || r>'Z')) && (r<'0' || r>'9')){
+                right--;
+                r=s.charAt(right);
+            }
+            System.out.println(left+" : "+right);
+            // System.out.println((char)l+" : "+r);
+            // System.out.println((char)(l^32)+" : "+r);
+            if(l!=r && ((char)(l^32))!=r){
+                // System.out.println(l+" : "+r);
+                // System.out.println((char)(l^32)+" : "+r);
+                return false;
+            }
+            left++;
+            right--;            
+        }
+        return true;
+    }
+}
