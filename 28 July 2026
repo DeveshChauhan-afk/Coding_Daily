@@ -99,3 +99,56 @@ class Solution {
 mistake: overcomplicated it with map inside map
 trick: just sort the characters in the string, it would make the anagrams similar then based on that just put them in a list.
 =============================================================================================================================================================
+
+Given a binary array nums, return the maximum length of a contiguous subarray with an equal number of 0 and 1.
+
+ 
+
+Example 1:
+
+Input: nums = [0,1]
+Output: 2
+Explanation: [0, 1] is the longest contiguous subarray with an equal number of 0 and 1.
+Example 2:
+
+Input: nums = [0,1,0]
+Output: 2
+Explanation: [0, 1] (or [1, 0]) is a longest contiguous subarray with equal number of 0 and 1.
+Example 3:
+
+Input: nums = [0,1,1,1,1,1,0,0,0]
+Output: 6
+Explanation: [1,1,1,0,0,0] is the longest contiguous subarray with equal number of 0 and 1.
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+nums[i] is either 0 or 1.
+ 
+Solution:
+class Solution {
+    public int findMaxLength(int[] nums) {
+        Map<Integer,Integer> map=new HashMap<>();
+        int maxlen=0;
+        int sum=0;
+        map.put(0,-1);
+        for(int i=0;i<nums.length;i++){
+            if(nums[i]==0){
+                sum-=1;
+            }else{
+                sum+=1;
+            }
+            if(map.containsKey(sum)){
+                maxlen=Math.max(maxlen,i-map.get(sum));
+            }else{
+                map.put(sum,i);
+            }
+        }
+        return maxlen;
+    }
+}
+
+Mistake: tried to update the sum index in map
+trick: just keep the first occurence don't update, and also use zero as -1 and sum==0 zero means equal number of 1 and 0.
+=============================================================================================================================================================
