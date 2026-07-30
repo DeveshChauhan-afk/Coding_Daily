@@ -1,0 +1,183 @@
+Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.
+
+A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.
+
+ 
+
+Example 1:
+
+
+Input: root = [3,4,5,1,2], subRoot = [4,1,2]
+Output: true
+Example 2:
+
+
+Input: root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]
+Output: false
+ 
+
+Constraints:
+
+The number of nodes in the root tree is in the range [1, 2000].
+The number of nodes in the subRoot tree is in the range [1, 1000].
+-104 <= root.val <= 104
+-104 <= subRoot.val <= 104
+
+Solution:
+class Solution {
+    boolean sametree(TreeNode root1,TreeNode root2){
+        if(root1==null && root2==null) return true;
+        if(root1==null || root2==null || root1.val!=root2.val) return false;
+        return sametree(root1.left,root2.left) && sametree(root1.right,root2.right);
+    }
+    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+        if(root==null || subRoot==null) return false;
+        Queue<TreeNode> q=new LinkedList<>();
+        q.offer(root);
+        while(!q.isEmpty()){
+            int n=q.size();
+            for(int i=0;i<n;i++){
+                TreeNode nn=q.poll();
+                if(nn.val==subRoot.val){
+                    if(sametree(nn,subRoot)) return true;
+                }
+                if(nn.left!=null) q.offer(nn.left);
+                if(nn.right!=null) q.offer(nn.right);
+            }
+        }
+        return false;
+    }
+}
+
+=========================================================================================================================================================
+Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.
+
+According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+
+ 
+
+Example 1:
+
+
+Input: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8
+Output: 6
+Explanation: The LCA of nodes 2 and 8 is 6.
+Example 2:
+
+
+Input: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4
+Output: 2
+Explanation: The LCA of nodes 2 and 4 is 2, since a node can be a descendant of itself according to the LCA definition.
+Example 3:
+
+Input: root = [2,1], p = 2, q = 1
+Output: 2
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [2, 105].
+-109 <= Node.val <= 109
+All Node.val are unique.
+p != q
+p and q will exist in the BST.
+
+Solution:
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root==null) return root;
+        if(root==p || root==q) return root;
+        TreeNode left=lowestCommonAncestor(root.left,p,q);
+        TreeNode right=lowestCommonAncestor(root.right,p,q);
+        if(left!=null && right!=null) return root;
+        if(right==null) return left;
+        return right;
+    }
+}
+
+===========================================================================================================================================================
+Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+
+A valid BST is defined as follows:
+
+The left subtree of a node contains only nodes with keys strictly less than the node's key.
+The right subtree of a node contains only nodes with keys strictly greater than the node's key.
+Both the left and right subtrees must also be binary search trees.
+ 
+
+Example 1:
+
+
+Input: root = [2,1,3]
+Output: true
+Example 2:
+
+
+Input: root = [5,1,4,null,null,3,6]
+Output: false
+Explanation: The root node's value is 5 but its right child's value is 4.
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 104].
+-231 <= Node.val <= 231 - 1
+
+Solution:
+class Solution {
+    public void helper(TreeNode root, long min,long max,boolean[] flag){
+        if(root==null || !flag[0]) return;
+        if(root.left!=null) helper(root.left,min,root.val,flag);
+        System.out.println(root.val+" : "+min+" : "+max+" : "+flag[0]);
+        if(root.val>=max || root.val<=min) flag[0]=false;
+        if(root.right!=null) helper(root.right,root.val,max,flag);
+    }
+    public boolean isValidBST(TreeNode root) {
+        boolean[] flag={true};
+        helper(root,Long.MIN_VALUE,Long.MAX_VALUE,flag);
+        return flag[0];        
+    }
+}
+
+===========================================================================================================================================================
+Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+
+ 
+
+Example 1:
+
+
+Input: root = [3,1,4,null,2], k = 1
+Output: 1
+Example 2:
+
+
+Input: root = [5,3,6,2,4,null,null,1], k = 3
+Output: 3
+ 
+
+Constraints:
+
+The number of nodes in the tree is n.
+1 <= k <= n <= 104
+0 <= Node.val <= 104
+ 
+
+Follow up: If the BST is modified often (i.e., we can do insert and delete operations) and you need to find the kth smallest frequently, how would you optimize?
+
+Solution:
+class Solution {
+    void helper(TreeNode root,int k,int[] ans,int[] ind){
+        if(root==null || k==0) return;
+        if(root.left!=null) helper(root.left,k,ans,ind);
+        if(ind[0]==k) ans[0]=root.val;
+        ind[0]++;
+        if(root.right!=null) helper(root.right,k,ans,ind);
+    }
+    public int kthSmallest(TreeNode root, int k) {
+        int[] ans={-1};
+        int[] ind={1};
+        helper(root,k,ans,ind);
+        return ans[0];
+    }
+}
