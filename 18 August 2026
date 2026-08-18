@@ -1,0 +1,86 @@
+An alien language uses the lowercase English alphabet, but the order of its letters is unknown. You are given an array of strings words[] that is claimed to be sorted lexicographically according to the rules of the alien language.
+
+Determine the order of the letters in the alien alphabet. If a valid ordering exists, return a string containing all unique letters in lexicographical order according to the alien language. Otherwise, return an empty string.
+
+If a string s1 is lexicographically smaller than a string s2, and the first position at which they differ contains letter a in s1 and letter b in s2, then a must appear before b in the alien alphabet.
+
+Note: The driver code prints true if the returned order is valid; otherwise, it prints false.
+
+Examples:
+
+Input: words[] = ["baa", "abcd", "abca", "cab", "cad"]
+Output: true
+Explanation: A possible correct order of letters in the alien dictionary is "bdac".
+The pair "baa" and "abcd" suggests 'b' appears before 'a' in the alien dictionary.
+The pair "abcd" and "abca" suggests 'd' appears before 'a' in the alien dictionary.
+The pair "abca" and "cab" suggests 'a' appears before 'c' in the alien dictionary.
+The pair "cab" and "cad" suggests 'b' appears before 'd' in the alien dictionary.
+So, 'b' -> 'd' -> 'a' -> 'c' is a valid ordering.
+Input: words[] = ["caa", "aaa", "aab"]
+Output: true
+Explanation: A possible correct order of letters in the alien dictionary is "cab".
+The pair "caa" and "aaa" suggests 'c' appears before 'a'.
+The pair "aaa" and "aab" suggests 'a' appear before 'b' in the alien dictionary. 
+So, 'c' -> 'a' -> 'b' is a valid ordering.
+Input: words[] = ["ab", "cd", "ef", "ad"]
+Output: ""
+Explanation: No valid ordering of letters is possible.
+The pair "ab" and "ef" suggests "a" appears before "e".
+The pair "ef" and "ad" suggests "e" appears before "a", which contradicts the ordering rules.
+Constraints:
+1 ≤ words.size() * words[i].size()  ≤ 106
+words[i] consists only of lowercase English letters.
+
+Solution:
+import java.util.*;
+class Solution {
+    public String findOrder(String[] words) {
+        // code here
+        Map<Integer,ArrayList<Integer>> map=new HashMap<>();
+        for(String word : words){
+            for(char ch : word.toCharArray()){
+                map.putIfAbsent((int)ch, new ArrayList<>());
+            }
+        }
+        for(int i=1;i<words.length;i++){
+            int min=Math.min(words[i].length(),words[i-1].length());
+            for(int j=0;j<min;j++){
+                if(words[i-1].charAt(j)!=words[i].charAt(j)){
+                    map.get((int)words[i-1].charAt(j)).add((int)words[i].charAt(j));
+                    break;
+                }
+            }
+        }
+        int[] degree=new int[128];
+        for(int ch:map.keySet()){
+            for(int num:map.get(ch)){
+                degree[num]++;
+            }
+        }
+        int pos=0;
+        Queue<Integer> q=new LinkedList<>();
+        for(int i=0;i<128;i++){
+            if(degree[i]==0 && map.containsKey(i)){
+                q.offer(i);
+            }
+        }
+        int size=map.size();
+        StringBuilder sb=new StringBuilder();
+        while(!q.isEmpty()){
+            int node=q.poll();
+            sb.append((char)(node));
+            pos++;
+            
+            for(int ch:map.getOrDefault(node,new ArrayList<>())){
+                degree[ch]--;
+                if(degree[ch]==0) q.offer(ch);
+            }
+        }
+        String s=sb.toString();
+        if(pos<size) return "";
+        return s;
+        
+    }
+}
+
+==============================================================================================================================================================
